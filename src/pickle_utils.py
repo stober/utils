@@ -9,6 +9,14 @@ Description: Utilities for using pickle.
 import cPickle as pickle
 import bz2
 
+def loaditer(fp):
+    # a load iter
+    while True:
+        try:
+            yield pickle.load(fp)
+        except EOFError:
+            raise StopIteration
+
 def load_or_compute(method, filename, recompute=False):
 
     try:

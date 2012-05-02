@@ -73,6 +73,34 @@ def scatter3d_with_graph(x,y,z,adj):
     return ax
 
 @save_show_no
+def dual_scatter(x,y,colors,lines):
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    ax.scatter3D(x[:,0],x[:,1],np.zeros(len(x[:,0])),c=colors)
+    ax.scatter3D(y[:,0],y[:,1],np.ones(len(y[:,0])),c=colors)
+
+    if lines:
+        for i in range(len(x)):
+            if i % 3 == 0:
+                pt1 = (x[i,0],y[i,0])
+                pt2 = (x[i,1],y[i,1])
+                pt3 = (0.0,1.0)
+                ax.plot(pt1,pt2,pt3,color='gray')
+
+    return ax
+
+@save_show_no
+def lvl_scatter(lvls,clvls):
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    cnt = 0
+    for l,c in zip(lvls,clvls):
+        ax.scatter3D(l[:,0],l[:,1],np.zeros(len(l[:,0])) + cnt,c=c)
+        cnt += 1
+    return ax
+    
+
+@save_show_no
 def scatter(x,y):
     fig = plt.figure()
     ax = fig.add_subplot(111)
