@@ -16,6 +16,41 @@ import bz2
 import sys
 import traceback
 
+def rsme(p,r):
+    return np.sqrt( np.sum((x - y)**2 for x,y in zip(p,r)) / len(p) )
+
+def consumer(func):
+    def start(*args,**kwargs):
+        c = func(*args,**kwargs)
+        c.next()
+        return c
+    return start
+
+@consumer
+def incavg(val = None):
+    """
+    Can optionally send the first value at initialization. .send returns the former avg. call .next after to get the current avg.
+    """
+
+    cnt = 0
+    avg = 0
+    
+    if not val is None:
+        cnt = 1
+        avg = val
+
+    while True:
+        val = (yield avg)
+
+        if val is None:
+            pass # next was called
+        elif cnt == 0: # first value
+            cnt = 1
+            avg = val
+        else:
+            cnt += 1
+            avg = avg + (val - avg) / float(cnt)
+
 def find_matches(s,t):
     n = len(s)
     m = len(t)
@@ -178,6 +213,17 @@ def load_or_compute(self,items,methods,filename,recompute=False):
     fp.close()
 
 if __name__ == '__main__':
-    generate_gradient_img('../ds/simple.jpg')
+    #generate_gradient_img('../ds/simple.jpg')
     #colors = create_cluster_colors_rgb(8)
     #print colors
+
+    avg = incavg()
+    print avg.next()
+    
+    for i in range(1,10):
+        print avg.send(i)
+
+
+    # print avg.next()
+    # print np.mean(range(10))
+    # print dir(avg)
