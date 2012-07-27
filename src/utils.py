@@ -16,8 +16,7 @@ import bz2
 import sys
 import traceback
 
-def rsme(p,r):
-    return np.sqrt( np.sum((x - y)**2 for x,y in zip(p,r)) / len(p) )
+# Decorators
 
 def consumer(func):
     def start(*args,**kwargs):
@@ -25,6 +24,22 @@ def consumer(func):
         c.next()
         return c
     return start
+
+
+def debugflag(func):
+    def wrapper(*args, **kwargs):        
+        if kwargs.has_key('debug') and kwargs['debug']:
+            del kwargs['debug']
+            import pdb
+            pdb.set_trace()
+        func(*args, **kwargs)
+    return wrapper
+
+# End Decorators
+
+def rsme(p,r):
+    return np.sqrt( np.sum((x - y)**2 for x,y in zip(p,r)) / len(p) )
+
 
 @consumer
 def incavg(val = None):
