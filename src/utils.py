@@ -15,6 +15,8 @@ import cPickle as pickle
 import bz2
 import sys
 import traceback
+import time
+
 
 # Decorators
 
@@ -25,14 +27,31 @@ def consumer(func):
         return c
     return start
 
+def timerflag(func):
+    def wrapper(*args, **kwargs):
+        if kwargs.has_key('timer') and kwargs['timer']:
+            del kwargs['timer']
+            starttime = time.time()
+            result = func(*args, **kwargs)
+            endtime = time.time()
+            print "# seconds: ", endtime - starttime
+        else:
+            result = func(*args, **kwargs)
+
+        return result
+    return wrapper
+    
 
 def debugflag(func):
     def wrapper(*args, **kwargs):        
         if kwargs.has_key('debug') and kwargs['debug']:
-            del kwargs['debug']
             import pdb
             pdb.set_trace()
-        func(*args, **kwargs)
+
+        if kwargs.has_key('debug'):
+            del kwargs['debug']
+
+        return func(*args, **kwargs)
     return wrapper
 
 # End Decorators
