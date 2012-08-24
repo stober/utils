@@ -16,10 +16,28 @@ import bz2
 import sys
 import traceback
 import time
+import scipy.sparse as sp
 
+def sp_create(dim1,dim2,format):
+    if format == "dok":
+        result = sp.dok_matrix((dim1,dim2))
+    elif format == "csr":
+        result = sp.csr_matrix((dim1,dim2))
+    elif format == "csc":
+        result = sp.csc_matrix((dim1,dim2))
+    elif format == "coo":
+        result = sp.coo_matrix((dim1,dim2))
+    elif format == "lil":
+        result = sp.lil_matrix((dim1,dim2))
+    elif format == "bsr":
+        result = sp.bsr_matrix((dim1,dim2))
+    elif format == "dia":
+        result = sp.dia_matrix((dim1,dim2))
+    else:
+        raise ValueError, "Unknown sparse format!"
+    return result
 
 # Decorators
-
 def consumer(func):
     def start(*args,**kwargs):
         c = func(*args,**kwargs)
