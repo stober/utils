@@ -17,6 +17,18 @@ import sys
 import traceback
 import time
 import scipy.sparse as sp
+from itertools import tee, izip
+import math
+
+def chunk(n, nchunks):
+    """Return a list of slices that divide an array into approximately nparts."""
+    d = n / nchunks
+    r = n - nchunks * d
+    indices = range(0,(d+1)*r,d+1) + range((d+1)*r, n+d, d) 
+    indices[-1] = None
+    a,b = tee(indices)
+    next(b,None)
+    return izip(a,b)
 
 def sp_create_data(data,rows,cols,dim1,dim2,format):
     """ Account for slightly different sparse matrix constructors. """
@@ -294,11 +306,13 @@ if __name__ == '__main__':
     #colors = create_cluster_colors_rgb(8)
     #print colors
 
-    avg = incavg()
-    print avg.next()
+    print [x for x in chunk(100000,8)]
+
+    # avg = incavg()
+    # print avg.next()
     
-    for i in range(1,10):
-        print avg.send(i)
+    # for i in range(1,10):
+    #     print avg.send(i)
 
 
     # print avg.next()
