@@ -30,6 +30,24 @@ def chunk(n, nchunks):
     next(b,None)
     return izip(a,b)
 
+def sp_create_dict(d, dim1, dim2, format):
+    data = []
+    rows = []
+    cols = []
+    
+    if type(iter(d).next()) == tuple:
+        for  ((i,j), v) in d.items():
+            data.append(v)
+            rows.append(i)
+            cols.append(j)
+    else:
+        for (i,v) in d.items():
+            data.append(v)
+            rows.append(i)
+            cols.append(0)
+ 
+    return sp_create_data(data,rows,cols,dim1,dim2,format)
+
 def sp_create_data(data,rows,cols,dim1,dim2,format):
     """ Account for slightly different sparse matrix constructors. """
     if format == "dok":
@@ -50,6 +68,10 @@ def sp_create_data(data,rows,cols,dim1,dim2,format):
         result = sp.bsr_matrix((data,(rows,cols)), shape = (dim1,dim2))
     elif format == "dia":
         raise NotImplementedError
+    elif format == "raw":
+        return (data, rows, cols, dim1, dim2) # just return raw data
+    elif format == "rawdict":
+        return dict(zip(rows,data))
     else:
         raise ValueError, "Unknown sparse format!"
     return result
