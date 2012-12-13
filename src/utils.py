@@ -219,7 +219,7 @@ def create_cluster_colors(n):
 
     return colors
 
-def create_cluster_colors_rgb(n):
+def create_cluster_colors_rgb(n, normalize=True):
     # create n distinct colors in rgb format
 
     colors = []
@@ -227,7 +227,10 @@ def create_cluster_colors_rgb(n):
         h = int( float(i) / float(n) *  360.0 )
         s = 50
         l = 50
-        colors.append(np.array(ImageColor.getrgb("hsl(%d,%d%%,%d%%)" % (h,s,l))) / 255.0 )
+        if normalize:
+            colors.append(np.array(ImageColor.getrgb("hsl(%d,%d%%,%d%%)" % (h,s,l))) / 255.0 )
+        else:
+            colors.append(np.array(ImageColor.getrgb("hsl(%d,%d%%,%d%%)" % (h,s,l))))
 
     return colors
 
