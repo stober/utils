@@ -71,7 +71,8 @@ def sp_create_data(data,rows,cols,dim1,dim2,format):
     elif format == "raw":
         return (data, rows, cols, dim1, dim2) # just return raw data
     elif format == "rawdict":
-        return dict(zip(rows,data))
+        # make sure we eliminate zeros
+        return dict(filter(lambda i: i[1] != 0, zip(rows,data)))
     else:
         raise ValueError, "Unknown sparse format!"
     return result
